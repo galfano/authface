@@ -39,13 +39,11 @@ public class Users {
     private final FacialRecognitionService facialRecognitionService;
 
     @PutMapping
-    public ResponseEntity create(@RequestBody User user, @RequestParam("file") MultipartFile file) throws IOException {
+    public ResponseEntity create(@RequestBody User user) {
 
         userRepository.save(user);
 
-        storageService.store(file, user.getId());
-
-        return new ResponseEntity(HttpStatus.OK);
+        return new ResponseEntity<>(user.getId(), HttpStatus.OK);
     }
 
     @PostMapping("/{id}/file")

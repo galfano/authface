@@ -122,11 +122,11 @@ public class FacialRecognitionService {
         Mat capturedFace = captureFace(imagePath);
 
         FaceRecognizer faceRecognizer = LBPHFaceRecognizer.create();
-        faceRecognizer.setThreshold(50);
 
         Path classifierPath = this.fileStorageLocation.resolve("classificador-lbph.yml");
 
         faceRecognizer.read(classifierPath.toUri().getPath());
+        faceRecognizer.setThreshold(50);
 
         IntPointer label = new IntPointer(1);
         DoublePointer confidence = new DoublePointer(1);
