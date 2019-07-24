@@ -4,11 +4,40 @@
     <meta charset="UTF-8">
     <title>AuthFace</title>
 
-    <meta http-equiv="refresh"
-          content="0; url=users/login">
-
+    <script src="https://code.jquery.com/jquery-3.4.1.min.js"
+            integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo="
+            crossorigin="anonymous"></script>
 </head>
 <body>
+
+<h1>aaaaaaa</h1>
+
+<script>
+
+    $(document).ready(function () {
+
+        $("#btnSubmit").on("click", function () {
+
+            var form = $('#fileUploadForm')[0];
+            var data = new FormData(form);
+
+            $.ajax({
+                type: "POST",
+                url: 'http://192.168.1.170:8086/authface/users/55/file',
+                enctype: 'multipart/form-data',
+                data: data,
+                processData: false,
+                contentType: false,
+                cache: false
+            });
+        })
+    });
+</script>
+
+<form method="POST" enctype="multipart/form-data" id="fileUploadForm">
+    <input type="file" name="file" id="file"/><br/><br/>
+    <input type="button" value="Submit" id="btnSubmit"/>
+</form>
 
 </body>
 </html>
