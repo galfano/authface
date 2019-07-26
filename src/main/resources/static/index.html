@@ -14,12 +14,29 @@
 
 <script>
 
+    // https://www.nashvail.me/blog/canvas-image/
+
     $(document).ready(function () {
+
+        var myCanvas = document.getElementById('my-canvas');
+        var myContext = myCanvas.getContext('2d');
+
+        var img = new Image();
+        img.src = 'https://www.prensalatina.com.br/images/2019/abril/24/Dilma-Rousseff.jpg';
+        img.onload = () => {
+            myContext.drawImage(img, 0, 0);
+        };
+
+        console.log(myCanvas.toDataURL());
 
         $("#btnSubmit").on("click", function () {
 
             var form = $('#fileUploadForm')[0];
             var data = new FormData(form);
+
+            var blob = new Blob([]);
+            var fileOfBlob = new File([blob], 'aFileName.json');
+            data.append("file", fileOfBlob);
 
             $.ajax({
                 type: "POST",
@@ -32,10 +49,12 @@
             });
         })
     });
+
 </script>
 
 <form method="POST" enctype="multipart/form-data" id="fileUploadForm">
-    <input type="file" name="file" id="file"/><br/><br/>
+<!--    <input type="file" name="file" id="file"/><br/><br/>-->
+    <canvas id="my-canvas"></canvas>
     <input type="button" value="Submit" id="btnSubmit"/>
 </form>
 

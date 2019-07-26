@@ -21,10 +21,10 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.nio.file.Path;
+import java.util.Base64;
 
 /**
  * Created galfano on 15/07/19.
@@ -47,16 +47,20 @@ public class Users {
     }
 
     @PostMapping("/{id}/file")
-    public ResponseEntity uploadPhoto(@RequestParam("file") MultipartFile file, @PathVariable Long id) throws IOException {
+    public ResponseEntity uploadPhoto(@RequestParam("file") String encodedString, @PathVariable Long id) throws IOException {
 
-        return new ResponseEntity<>(storageService.store(file, id), HttpStatus.OK);
+        byte[] decodedBytes = Base64.getDecoder().decode(encodedString.split(",")[1]);
+
+        return new ResponseEntity<>(storageService.store(decodedBytes, id), HttpStatus.OK);
 
     }
 
     @PostMapping("/auth")
-    public ResponseEntity auth(@RequestParam("file") MultipartFile file) throws IOException {
+    public ResponseEntity auth(@RequestParam("file") String encodedString) throws IOException {
 
-        Path imageTmpPath = storageService.saveInTmp(file);
+        byte[] decodedBytes = Base64.getDecoder().decode(encodedString.split(",")[1]);
+
+        Path imageTmpPath = storageService.saveInTmp(decodedBytes);
 
         User userFound = facialRecognitionService.recognize(imageTmpPath);
 

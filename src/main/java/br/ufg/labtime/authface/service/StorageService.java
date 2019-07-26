@@ -20,13 +20,12 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
-import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.nio.file.StandardCopyOption;
+import java.util.Calendar;
 import java.util.UUID;
 
 /**
@@ -59,7 +58,7 @@ public class StorageService {
         }
     }
 
-    public UUID store(MultipartFile file, long userId) throws IOException {
+    public UUID store( byte[] bytes, long userId) throws IOException {
 
         Path userFolder = this.fileStorageLocation.resolve(String.valueOf(userId));
 
@@ -68,10 +67,11 @@ public class StorageService {
             Files.createDirectories(userFolder);
         }
 
-        String filename = StringUtils.cleanPath(file.getOriginalFilename());
+        String filename = StringUtils.cleanPath("foto.jpg");
 
         Path targetLocation = userFolder.resolve(filename);
-        Files.copy(file.getInputStream(), targetLocation, StandardCopyOption.REPLACE_EXISTING);
+
+        Files.write(targetLocation, bytes);
 
         File fileObj = new File();
         fileObj.setUri(targetLocation.toUri().getPath());
@@ -82,13 +82,13 @@ public class StorageService {
         return fileObj.getId();
     }
 
-    public Path saveInTmp(MultipartFile file)  throws IOException {
+    public Path saveInTmp(byte[] bytes)  throws IOException {
 
-        String filename = StringUtils.cleanPath(file.getOriginalFilename());
+        String filename = StringUtils.cleanPath("foto_".concat(String.valueOf(Calendar.getInstance().getTimeInMillis())).concat(".jpg"));
 
         Path targetLocation = Path.of("/tmp/").resolve(filename);
 
-        Files.copy(file.getInputStream(), targetLocation, StandardCopyOption.REPLACE_EXISTING);
+        Files.write(targetLocation, bytes);
 
         return targetLocation;
     }
